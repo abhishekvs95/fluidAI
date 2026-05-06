@@ -1,0 +1,21 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+
+application     {{ solver }};
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         {{ endTime }};
+deltaT          {{ deltaT }};
+writeControl    timeStep;
+writeInterval   100;
+purgeWrite      3;
+writeFormat     ascii;
+writePrecision  6;
+runTimeModifiable true;
