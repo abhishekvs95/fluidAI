@@ -1,4 +1,4 @@
-This is a streamlit app that runs fluid dynamics simulations thorugh natural language
+A streamlit app that runs fluid dynamics simulations thorugh natural language
 
 It uses LLMs to convert a fluid problem described using plain english into fluid dynamics paramaters. LLMs are modular and can use both locally hosted LLMs and via API calls.
 
