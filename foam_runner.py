@@ -1,10 +1,14 @@
-"""
-foam_runner.py — Run OpenFOAM pipeline, yield log lines for streaming
-"""
+# This code runs OpenFOAM and get log lines for streaming
+
+
+#Import libraries
+
 import subprocess, shutil
 from pathlib import Path
 from typing import Generator
 
+
+# Runs shell command and gets stdout lines in real time
 
 def _run_cmd(cmd: list[str], cwd: str) -> Generator[str, None, None]:
     """Run a shell command and yield stdout lines in real time."""
@@ -22,6 +26,9 @@ def _run_cmd(cmd: list[str], cwd: str) -> Generator[str, None, None]:
     if proc.returncode != 0:
         yield f"\n[ERROR] Command {' '.join(cmd)} exited with code {proc.returncode}\n"
 
+
+# Simulation function that runs:
+# blockMesh and solver 
 
 def run_simulation(case_dir: str, params: dict) -> Generator[str, None, None]:
     """
