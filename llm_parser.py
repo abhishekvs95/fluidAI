@@ -1,13 +1,15 @@
-"""
-llm_parser.py — Decode natural language → validated JSON params
-Supports: groq, ollama, gemini
-"""
+# Uses LLMs to decode natural language and produce validated JSON params
+# Supports: groq, ollama, gemini (add other models of your choice by defining a function and updating the app.py file with the LLM)
+
+#Calling Libraries
+
 import json, re
 from pydantic import BaseModel, validator, ValidationError
 from typing import Literal, Optional
 
 
-# ── Schema ─────────────────────────────────────────────────────
+# OpenFOAM Schema
+
 class FoamParams(BaseModel):
     solver:   Literal["icoFoam", "simpleFoam", "pisoFoam"] = "simpleFoam"
     template: Literal["cavity", "pipeFlow", "channel"]      = "cavity"
@@ -31,8 +33,10 @@ class FoamParams(BaseModel):
         return v
 
 
-SYSTEM_PROMPT = """You are a CFD pre-processor. The user describes a fluid dynamics problem in plain English.
-Extract simulation parameters and return ONLY a JSON object — no prose, no markdown fences.
+# System prompt definition
+
+SYSTEM_PROMPT = """You are a CFD pre processor. The user describes a fluid dynamics problem in plain English.
+Extract simulation parameters and return ONLY a JSON object (no prose, no markdown fences).
 
 JSON keys (all required):
   solver   : one of "icoFoam" (laminar transient), "simpleFoam" (turbulent steady), "pisoFoam" (turbulent transient)
@@ -49,7 +53,7 @@ Return ONLY JSON. Example:
 """
 
 
-# ── Backend callers ────────────────────────────────────────────
+# Backend callers
 def _call_groq(prompt: str, api_key: str) -> str:
     from groq import Groq
     client = Groq(api_key=api_key)
@@ -94,7 +98,8 @@ def _call_gemini(prompt: str, api_key: str) -> str:
     return response.text
 
 
-# ── Public API ─────────────────────────────────────────────────
+# Public API
+
 def parse_problem(
     problem: str,
     backend: str = "groq",
