@@ -1,13 +1,14 @@
-"""
-visualizer.py — Render OpenFOAM results with PyVista, plot residuals with Plotly
-"""
+# Render OpenFOAM results with Matplotlib (I'll update this file for the app to use pyvista for better rendering
+
+#Calling Libraries
+
 import re
 from pathlib import Path
 from typing import Optional
 import plotly.graph_objects as go
 
 
-# ── VTK / PyVista render ───────────────────────────────────────
+# matplotlib renderer
 
 def render_results(case_dir: str):
     import numpy as np
@@ -26,18 +27,18 @@ def render_results(case_dir: str):
     if not os.path.exists(u_file):
         return None
 
-    # Read entire file and extract all (ux uy uz) tuples with regex
+    # This reads entire file and extract all (ux uy uz)  with regex
     content = open(u_file).read()
     vectors = re.findall(r'\(([+-]?[\d.eE+-]+)\s+([+-]?[\d.eE+-]+)\s+([+-]?[\d.eE+-]+)\)', content)
 
-    # First match is often a boundary header — filter by keeping only internalField
+    # First match is often a boundary header therefore filter by keeping only internalField
     # Find count before the block
     count_match = re.search(r'internalField\s+nonuniform List<vector>\s+(\d+)', content)
     if not count_match:
         return None
 
     n_cells = int(count_match.group(1))
-    # Take only the first n_cells vectors (skip boundary vectors at end)
+    # Take only the first n_cells vectors and skip boundary vectors at end
     internal = vectors[:n_cells]
 
     if not internal:
@@ -46,7 +47,7 @@ def render_results(case_dir: str):
     mag = [( float(ux)**2 + float(uy)**2 + float(uz)**2 )**0.5
            for ux, uy, uz in internal]
 
-    # Reshape — cavity mesh is 20x20 by default
+    # Reshape because cavity mesh is 20x20 by default
     side = int(len(mag)**0.5)
     grid = np.array(mag[:side*side]).reshape(side, side)
 
@@ -69,13 +70,8 @@ def _is_time_dir(name: str) -> bool:
         return False
 
 
-# ── Residual plot ──────────────────────────────────────────────
+# Residual plot: this fn parses openFOAM log for residuals and return a plotly figure
 def plot_residuals(log: str) -> Optional[go.Figure]:
-    """
-    Parse OpenFOAM log for residual lines and return a Plotly figure.
-    Handles both simpleFoam and icoFoam/pisoFoam formats.
-    """
-    # Pattern: "Solving for Ux, Initial residual = 0.00123, ..."
     pattern = re.compile(
         r"Solving for (\w+),\s+Initial residual = ([0-9eE+\-.]+)"
     )
