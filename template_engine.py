@@ -1,6 +1,5 @@
-"""
-template_engine.py — Fill OpenFOAM case templates from params dict
-"""
+# This is a template filler: Fills OpenFOAM case templates from params dict
+
 import os, shutil, tempfile
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
@@ -8,11 +7,9 @@ from jinja2 import Environment, FileSystemLoader
 TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 
+#Function to write template and replace all Jinja2 placeholers
+
 def build_case(params: dict) -> str:
-    """
-    Copy the chosen template folder to a temp dir,
-    render all Jinja2 placeholders, return the case path.
-    """
     template_name = params["template"]
     src = TEMPLATES_DIR / template_name
     if not src.exists():
@@ -35,6 +32,6 @@ def build_case(params: dict) -> str:
                 rendered = tmpl.render(**params)
                 fpath.write_text(rendered)
             except Exception:
-                pass  # Binary or non-template file — skip
+                pass  # Skip binary or non-template file 
 
     return case_dir
