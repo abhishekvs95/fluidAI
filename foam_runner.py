@@ -11,7 +11,6 @@ from typing import Generator
 # Runs shell command and gets stdout lines in real time
 
 def _run_cmd(cmd: list[str], cwd: str) -> Generator[str, None, None]:
-    """Run a shell command and yield stdout lines in real time."""
     proc = subprocess.Popen(
         cmd,
         cwd=cwd,
@@ -28,17 +27,10 @@ def _run_cmd(cmd: list[str], cwd: str) -> Generator[str, None, None]:
 
 
 # Simulation function that runs:
-# blockMesh and solver 
+# blockMesh, solver and gets log lines for live display
 
 def run_simulation(case_dir: str, params: dict) -> Generator[str, None, None]:
-    """
-    Full pipeline:
-      1. blockMesh
-      2. (optional) decomposePar  if n_cores > 1
-      3. solver
-      4. (optional) reconstructPar
-    Yields log lines for live display.
-    """
+    
     n = params.get("n_cores", 1)
     solver = params.get("solver", "simpleFoam")
 
@@ -67,9 +59,8 @@ def run_simulation(case_dir: str, params: dict) -> Generator[str, None, None]:
 
     yield "\n=== Done ===\n"
 
-
+ # Function to write system/decomposeParDict for scotch decomposition
 def _write_decompose_dict(case_dir: str, n: int):
-    """Write system/decomposeParDict for scotch decomposition."""
     content = f"""FoamFile {{ version 2.0; format ascii; class dictionary;
     location "system"; object decomposeParDict; }}
 numberOfSubdomains {n};
