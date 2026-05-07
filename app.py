@@ -1,7 +1,8 @@
-"""
-app.py — Main Streamlit entry point
-Run: streamlit run app.py
-"""
+#Streamlit interface for interacting with the application
+
+
+# Libraries import
+
 import streamlit as st
 import time
 from llm_parser import parse_problem
@@ -12,7 +13,9 @@ from visualizer import render_results
 st.set_page_config(page_title="FluidAI", layout="wide")
 st.title("FluidAI — Natural Language CFD")
 
-# ── Session state ──────────────────────────────────────────────
+
+# Defining session state
+
 if "params" not in st.session_state:
     st.session_state.params = None
 if "case_dir" not in st.session_state:
@@ -20,9 +23,11 @@ if "case_dir" not in st.session_state:
 if "log" not in st.session_state:
     st.session_state.log = ""
 
-# ── Sidebar config ─────────────────────────────────────────────
+
+# Sidebar configuration
+
 with st.sidebar:
-    st.header("⚙️ Config")
+    st.header("Config")
     llm_backend = st.selectbox("LLM backend", ["groq", "ollama", "gemini"])
     if llm_backend == "groq":
         api_key = st.text_input("Groq API key", type="password")
@@ -35,13 +40,15 @@ with st.sidebar:
     wall_time  = st.slider("Max wall time (min)", 1, 10, 5)
     n_cores    = st.slider("CPU cores for OpenFOAM", 1, 12, 6)
 
-# ── Problem input ──────────────────────────────────────────────
+
+# Problem input
+
 col1, col2 = st.columns([2, 1])
 
 with col1:
     problem = st.text_area(
         "Describe your fluid dynamics problem",
-        placeholder="e.g. Turbulent airflow over a backward-facing step at Re=5000, "
+        placeholder="e.g. Turbulent airflow over a backward facing step at Re=5000, "
                     "air at 20°C, inlet velocity 10 m/s",
         height=120,
     )
@@ -60,7 +67,8 @@ with col2:
 if "problem_prefill" in st.session_state:
     problem = st.session_state.pop("problem_prefill")
 
-# ── Parse → JSON ───────────────────────────────────────────────
+# Parse the problem and create JSON file
+
 if st.button("Parse problem", disabled=not problem):
     with st.spinner("Asking LLM to decode problem…"):
         params, raw = parse_problem(problem, backend=llm_backend, api_key=api_key)
@@ -70,9 +78,11 @@ if st.button("Parse problem", disabled=not problem):
         with st.expander("Raw JSON from LLM"):
             st.json(raw)
     else:
-        st.error("Parse failed — try rephrasing or check API key")
+        st.error("Parse failed. Try rephrasing or check API key")
 
-# ── Show/edit params ───────────────────────────────────────────
+
+# Show or edit params
+
 if st.session_state.params:
     p = st.session_state.params
     st.subheader("Simulation parameters")
@@ -86,7 +96,9 @@ if st.session_state.params:
     p["max_cells"]  = max_cells
     st.session_state.params = p
 
-# ── Run simulation ─────────────────────────────────────────────
+
+# Run simulation
+
 if st.session_state.params and st.button("Run simulation", type="primary"):
     p = st.session_state.params
 
@@ -112,7 +124,9 @@ if st.session_state.params and st.button("Run simulation", type="primary"):
     st.session_state.log = "".join(log_lines)
     st.success("Simulation finished")
 
-# ── Visualise results ──────────────────────────────────────────
+
+# Visualise results
+
 if st.session_state.case_dir:
     st.subheader("Results")
     tab1, tab2, tab3 = st.tabs(["Velocity field", "Residuals", "Explain output"])
