@@ -4,12 +4,12 @@ A streamlit app that runs fluid dynamics simulations through natural language. I
 
 ### CFD demo - Lid Driven Cavity Problem
 
-An example simulation is demonstrated to show the UI and functionality of fluiAI. A simple lid driven cavity problem is the fuild dynamic problem to be solved. It is a standard 2D fluid dynamics benchmark problem involving an incompressible fluid inside a square container with three stationary wall and moving top wall (lid). This involves solving Navier Stokes equation where there is a primary vortex and secondary corner vortices.
+An example simulation is demonstrated to show the UI and functionality of fluidAI. A simple lid driven cavity problem is the fuild dynamic problem to be solved. It is a standard 2D fluid dynamics benchmark problem involving an incompressible fluid inside a square container with three stationary wall and moving top wall (lid). This involves solving Navier Stokes equation where there is a primary vortex and secondary corner vortices.
 
 Below is the streamlit interface showing text input and the parameters are chosen by the LLM of choice as input for simulation
 <img width="1864" height="935" alt="ss1" src="https://github.com/user-attachments/assets/8a86b3fe-5844-4add-982c-17c1fcb84ce5" />
 
-After simulation is done, the results can be viwed as the velocity field and residuals
+After simulation is done, the results can be viewed as the velocity field and residuals
 <img width="1857" height="929" alt="ss2" src="https://github.com/user-attachments/assets/3bb3677c-151e-4eec-a011-6dda806a6d63" />
 
 This image shows the primary vortex at the middle and secondary corner vortex at the top right corner after 10 seconds of running the simulation.
