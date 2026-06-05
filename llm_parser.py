@@ -1,5 +1,5 @@
 # Uses LLMs to decode natural language and produce validated JSON params
-# Supports: groq, ollama, gemini (add other models of your choice by defining a function and updating the app.py file with the LLM)
+# Supports: groq, ollama, gemini (add other models if necessary)
 
 #Calling Libraries
 
