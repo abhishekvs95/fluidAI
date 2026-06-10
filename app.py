@@ -35,7 +35,7 @@ with st.sidebar:
         api_key = st.text_input("Gemini API key", type="password")
     else:
         api_key = None
-        st.info("Ollama runs locally — no key needed")
+        st.info("Ollama runs locally")
     max_cells = st.slider("Max mesh cells (k)", 50, 500, 200) * 1000
     wall_time  = st.slider("Max wall time (min)", 1, 10, 5)
     n_cores    = st.slider("CPU cores for OpenFOAM", 1, 12, 6)
